@@ -1,0 +1,13 @@
+html
+  head
+    title Custom Firechat
+    link(href='/css/app.css', rel='stylesheet')
+  body
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js')
+    script.
+  h2 Welcome to Firechat
+  div.example-chat.l-demo-container
+    header Inst Brew Firechat
+    ul#example-messages.example-chat-messages(data-hook='chat-list-messages')
+    footer
+      input#messageInput(type='text', placeholder='Type a message...',data-hook='chat-message')
