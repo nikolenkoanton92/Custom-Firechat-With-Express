@@ -1,0 +1,10 @@
+{
+  "name": "firechat-with-express",
+  "version": "0.0.1",
+  "description": "my first custom firechat app",
+  "dependencies": {
+    "express": "^4.10.2",
+    "firebase": "^2.1.0",
+    "jade": "^1.8.2"
+  }
+}
