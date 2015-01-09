@@ -2,9 +2,49 @@ html
   head
     title Custom Firechat
     link(href='/css/app.css', rel='stylesheet')
-  body
-    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js')
+    script(src='https://cdn.firebase.com/js/client/2.0.6/firebase.js')
+    link(rel='stylesheet', href='https://cdn.firebase.com/libs/firechat/2.0.1/firechat.min.css')
+    script(src='https://cdn.firebase.com/libs/firechat/2.0.1/firechat.min.js')
     script.
+      var myFirebaseRef = new Firebase("https://ib-dashboard-dev.firebaseio.com/tests/firechat");
+      myFirebaseRef.authWithPassword({
+        "email" :  "youremail",
+        "password" :  "yourpassword"
+        }, function(error, authData){
+        if(error){
+        console.log('Login Failed!',error);
+        }else{
+        console.log('Auth ok!', authData);
+        myFirebaseRef.child('room-messages/-JfAHDZ2oIRnT4yu3dtA').on('child_added', function(snap){
+          console.log(snap.key() + 'it is key - ' + snap.val().message + ' and this is value');
+          $('#example-messages').append('<li>' +snap.val().name + ':' + snap.val().message +  '</li>')
+          });
+        }
+        });
+  body
+    script.
+
+      var chat = new Firechat(myFirebaseRef);
+      chat.setUser('simplelogin:1310', 'disappearer', function(user){
+        myFirebaseRef.child('room-metadata/').orderByChild('name').equalTo('sublime').on('child_added', function(snapshot) {
+          console.log(snapshot.val());
+          chat.enterRoom(snapshot.val().id);
+          //- chat.sendMessage(snapshot.val().id, 'Hello Firechat2', 'default', function(complete) {
+          //-   });
+        $('#messageInput').keypress(function(e){
+          if(e.which === 13){
+            var message = $(e.currentTarget).val();
+
+            chat.sendMessage(snapshot.val().id, message, 'default', function(complete) {
+              $(e.currentTarget).val('');
+           });
+          }
+          });
+          });
+        });
+
+
   h2 Welcome to Firechat
   div.example-chat.l-demo-container
     header Inst Brew Firechat
