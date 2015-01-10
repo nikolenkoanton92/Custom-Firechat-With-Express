@@ -7,35 +7,30 @@ html
     link(rel='stylesheet', href='https://cdn.firebase.com/libs/firechat/2.0.1/firechat.min.css')
     script(src='https://cdn.firebase.com/libs/firechat/2.0.1/firechat.min.js')
     script.
-      var myFirebaseRef = new Firebase("https://ib-dashboard-dev.firebaseio.com/tests/firechat");
+      var myFirebaseRef = new Firebase("https://yourfireceurl");
       myFirebaseRef.authWithPassword({
-        "email" :  "youremail",
-        "password" :  "yourpassword"
+        "email" :  "emailforauth",
+        "password" :  "passwordforauth"
         }, function(error, authData){
         if(error){
         console.log('Login Failed!',error);
         }else{
-        console.log('Auth ok!', authData);
-        myFirebaseRef.child('room-messages/-JfAHDZ2oIRnT4yu3dtA').on('child_added', function(snap){
-          console.log(snap.key() + 'it is key - ' + snap.val().message + ' and this is value');
-          $('#example-messages').append('<li>' +snap.val().name + ':' + snap.val().message +  '</li>')
+        myFirebaseRef.child('room-messages/#{roomId}').on('child_added', function(snap){
+          if(snap.key() !== undefined){
+            $('#example-messages').append('<li>' +snap.val().name + ':' + snap.val().message +  '</li>')
+          }
           });
         }
         });
   body
     script.
-
       var chat = new Firechat(myFirebaseRef);
-      chat.setUser('simplelogin:1310', 'disappearer', function(user){
-        myFirebaseRef.child('room-metadata/').orderByChild('name').equalTo('sublime').on('child_added', function(snapshot) {
-          console.log(snapshot.val());
+      chat.setUser('user:uid', 'nickname', function(user){
+        myFirebaseRef.child('room-metadata/').orderByChild('name').equalTo('#{roomId}').on('child_added', function(snapshot) {
           chat.enterRoom(snapshot.val().id);
-          //- chat.sendMessage(snapshot.val().id, 'Hello Firechat2', 'default', function(complete) {
-          //-   });
         $('#messageInput').keypress(function(e){
           if(e.which === 13){
             var message = $(e.currentTarget).val();
-
             chat.sendMessage(snapshot.val().id, message, 'default', function(complete) {
               $(e.currentTarget).val('');
            });
@@ -45,7 +40,7 @@ html
         });
 
 
-  h2 Welcome to Firechat
+  h2 Welcome to Firechat #{roomId}
   div.example-chat.l-demo-container
     header Inst Brew Firechat
     ul#example-messages.example-chat-messages(data-hook='chat-list-messages')
